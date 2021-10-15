@@ -37,44 +37,88 @@ void view(){
 }
 
 
-int matrix[5][5];
+int matrix[10][10],x,sp;
 
+int isElement(int n){
+
+    for(int i = 0;i < top;i++)
+        if(n == stack[i])
+            return 1;
+    return 0;
+}
+
+int checkCondition(int ix,int y,int thisx,int thisy){
+
+    if(ix == thisx)
+        if(thisy == y + 1 || thisy == y - 1){
+            //printf("\n\n%d\n\n",!isElement(matrix[ix][y]));
+            if(!isElement(matrix[ix][y]))
+                return 1;
+        }
+            
+    if(y == thisy)
+        if(ix == thisx + 1 || ix == thisx - 1)
+            if(!isElement(matrix[ix][y]))
+                return 1;
+
+    return 0;
+
+}
 
 void puzzle(int num){
 
-    view();
-    static int n = 0;
-    ++num;
-    if(num == 10000)
-        return;
-    if(top == 24)
-        return;
-    for(int i = 0;i < 5;i++)
-        for(int j = 0;j < 5;j++)
-            if(matrix[i][j] == num)
+    int thisx,thisy;
+
+    for(int i = 0;i < x;i++)
+        for(int j = 0;j < x;j++)
+            if(matrix[i][j] == num){
+                printf("\nLoop called\n");
+                thisx = i;
+                thisy = j;
                 push(matrix[i][j]);
-    for(int i = 0;i < 5;i++)
-        for(int j = 0;j < 5;j++){
-            if(matrix[i][j] == num + 5 || matrix[i][j] == num - 5 || matrix[i][j] == num + 1 || matrix[i][j] == num - 1){
+                break;
+            }
+
+    if(top == x * x - 1)
+        return;
+
+    for(int i = 0;i < x;i++)
+        for(int j = 0;j < x;j++){
+            if(top == x * x - 1)
+                return;
+            printf("Loop %d %d of %d %d\n",i,j,thisx,thisy);
+            if(checkCondition(i,j,thisx,thisy)){
+
+                view();
                 puzzle(matrix[i][j]);
-            
+                
             }
         }
 
+    if(top == x * x - 1)
+        return;
     pop();    
-            
+    view();           
         
     
 }
 
 void main(){
+
     int n = 0;
-    for(int i = 0;i < 5;i++)
-        for(int j = 0;j < 5;j++){
+
+    printf("Enter x value\n");
+    scanf("%d",&x);
+
+    printf("Enter starting point\n");
+    scanf("%d",&sp);
+
+    for(int i = 0;i < x;i++)
+        for(int j = 0;j < x;j++){
             matrix[i][j] = n++;
         }
 
-    puzzle(1);
+    puzzle(sp);
 
     view();
 
